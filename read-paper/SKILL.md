@@ -82,6 +82,29 @@ follow any `\input`/`\include`. If that fails, fall back to the HTML rendering a
 
 Read the whole thing before step 3. Do not report on it yet.
 
+### Equation numbers
+
+The source contains `\label{...}`, never numbers — LaTeX assigns those at compile
+time. Counting numbered environments yourself is unreliable: `align` numbers
+every line unless suppressed, `\nonumber`/`\notag` skip silently, `equation*`
+and `\tag{}` and `subequations` (5a, 5b) all break the sequence, appendices
+restart with their own scheme, and `\input` ordering shifts everything after a
+mistake. **One missed `\nonumber` puts every later number off by one.**
+
+So, in order of preference:
+
+1. **Fetch the rendered version and read the numbers off it** —
+   `https://arxiv.org/html/<id>` (most papers from 2024 on), falling back to
+   `https://ar5iv.labs.arxiv.org/html/<id>` for older ones. There the numbers
+   are real rather than simulated. Do this whenever the paper is equation-heavy;
+   it takes one fetch and removes the whole failure mode.
+2. **If no rendered version is available, treat numbers as approximate** and
+   lean on content-based identification throughout. Tell the user once, briefly,
+   that numbering may be slightly off in this paper and to trust the description
+   over the number.
+
+Either way, never let a number be the *only* identifier for an equation.
+
 ## Step 3 — Pre-reading questions
 
 The purpose of this step is to install the **big picture** before any detail
@@ -132,7 +155,14 @@ be most tempted to work through.
 
 For each one, give exactly:
 
-- **Equation number and where to find it.**
+- **Where to find it — identified by content, not just by number.** Equation
+  numbers are *not present in the LaTeX source*; they are assigned at compile
+  time, so any number you give is a simulated count and is easily wrong (see
+  "Equation numbers" below). Always identify an equation by section plus a
+  distinguishing feature: "in §2.1, the continuity equation δ̇ = −θ" or "the
+  first display in §3, the one with the ⟨δδ⟩ term". Give the number too, but
+  as a hint, not as the identifier — and if you are not confident in it, say
+  "around eq. 5" rather than stating it flatly.
 - **What it says, in words.** Plain physical meaning, one or two sentences —
   what quantity is being related to what, and why that relation matters here.
   No re-derivation, no term-by-term walkthrough.
